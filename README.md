@@ -29,6 +29,7 @@ Semua perintah dijalankan menggunakan PowerShell dari root folder proyek.
 PowerShell
 
 docker build -t uts-aggregator .
+
 2. Run Docker Container
 Perintah ini menjalankan container dan me-mount folder ./data lokal ke /app/data di dalam container untuk persistensi database SQLite.
 
@@ -39,10 +40,12 @@ docker run -d `
   --name my-aggregator `
   -v ${PWD}/data:/app/data `
   uts-aggregator
+  
 3. Cek Log (Opsional)
 PowerShell
 
 docker logs -f my-aggregator
+
 4. Stop dan Hapus Container
 PowerShell
 
@@ -68,19 +71,23 @@ JSON
   "source": "string",
   "payload": { "key": "value" }
 }
-GET /events
+
+5. GET /events
 Mengembalikan daftar event unik yang telah berhasil diproses.
 
 Query Parameter (Opsional): topic (string) - Untuk filter berdasarkan topic.
 
 Respon Sukses: 200 OK
 
-GET /stats
+6. GET /stats
 Menampilkan statistik operasional layanan.
 
 Respon Sukses: 200 OK
 
+--------------------------------------------------------------------------------------------------------------
+
 Contoh Penggunaan (PowerShell)
+
 1. Siapkan Payload
 PowerShell
 
@@ -92,6 +99,7 @@ $eventJson = @'
   "payload": { "amount": 50000, "user_id": "u_001" }
 }
 '@
+
 2. Kirim Event (Unik dan Duplikat)
 Kirim event pertama kali:
 
@@ -103,6 +111,7 @@ Kirim event yang sama (duplikat):
 PowerShell
 
 Invoke-RestMethod -Uri http://localhost:8080/publish -Method Post -Body $eventJson -ContentType "application/json"
+
 3. Periksa Statistik
 PowerShell
 
@@ -137,6 +146,8 @@ PowerShell
 Invoke-RestMethod -Uri http://localhost:8080/stats
 Output akan menunjukkan received: 1 tapi unique_processed: 0 dan duplicate_dropped: 1, membuktikan state persistensi bekerja.
 
+----------------------------------------------------------------------------------------------------------------------------------
+
 Development & Testing Lokal
 1. Setup Virtual Environment
 PowerShell
@@ -150,9 +161,11 @@ Pastikan venv aktif.
 PowerShell
 
 pytest
+
 3. Jalankan Stress Test
 Pastikan container sedang berjalan (docker run ...) dan venv aktif.
 
 PowerShell
 
 python .\run_performance_test.py
+
